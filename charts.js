@@ -1,4 +1,5 @@
 // charts.js — SVG-based mini chart renderers (no external dependencies)
+// this file changed under branch3
 
 /**
  * Renders a horizontal bar gauge into a container element.
