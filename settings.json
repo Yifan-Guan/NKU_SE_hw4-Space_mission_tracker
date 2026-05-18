@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": "Space Mission Tracker",
+    "version": "1.0.0",
+    "refreshIntervalMs": 5000
+  },
+  "statusColors": {
+    "EN_ROUTE":  "#3ecfcf",
+    "LAUNCHED":  "#a3e635",
+    "CRITICAL":  "#f87171",
+    "COMPLETED": "#94a3b8"
+  },
+  "healthColors": {
+    "NOMINAL":   "#4ade80",
+    "DEGRADED":  "#facc15",
+    "CRITICAL":  "#f87171"
+  },
+  "missionSchema": {
+    "required": ["id", "name", "destination", "status", "launchDate", "eta", "distanceKm", "fuelPercent", "crewIds", "telemetry"],
+    "statuses": ["LAUNCHED", "EN_ROUTE", "CRITICAL", "COMPLETED", "ABORTED"]
+  }
+}

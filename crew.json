@@ -1,0 +1,12 @@
+[
+  { "id": "C01", "name": "Commander Yuki Tanaka",  "role": "Mission Commander",  "healthStatus": "NOMINAL", "ageYrs": 41 },
+  { "id": "C02", "name": "Dr. Priya Nair",         "role": "Chief Medical Officer","healthStatus": "NOMINAL", "ageYrs": 36 },
+  { "id": "C03", "name": "Sgt. Marcus Webb",        "role": "Flight Engineer",    "healthStatus": "NOMINAL", "ageYrs": 33 },
+  { "id": "C04", "name": "Dr. Lena Braun",          "role": "Astrobiologist",     "healthStatus": "NOMINAL", "ageYrs": 38 },
+  { "id": "C05", "name": "Pilot Ravi Okonkwo",      "role": "Pilot",              "healthStatus": "NOMINAL", "ageYrs": 30 },
+  { "id": "C06", "name": "Commander Nadia Petrov",  "role": "Mission Commander",  "healthStatus": "DEGRADED","ageYrs": 45 },
+  { "id": "C07", "name": "Dr. Sam Alvarado",        "role": "Systems Engineer",   "healthStatus": "NOMINAL", "ageYrs": 29 },
+  { "id": "C08", "name": "Pilot Fiona Clarke",      "role": "Co-Pilot",           "healthStatus": "CRITICAL","ageYrs": 34 },
+  { "id": "C09", "name": "Dr. Jin-ho Park",         "role": "Geologist",          "healthStatus": "DEGRADED","ageYrs": 37 },
+  { "id": "C10", "name": "Astronaut Elena Vasquez", "role": "Science Officer",    "healthStatus": "NOMINAL", "ageYrs": 44 }
+]

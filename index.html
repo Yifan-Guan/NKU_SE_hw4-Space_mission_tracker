@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Space Mission Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;500;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #060d1a;
+    --surface:   #0a1628;
+    --surface2:  #0f2044;
+    --border:    #1a3060;
+    --accent:    #3ecfcf;
+    --green:     #a3e635;
+    --red:       #f87171;
+    --yellow:    #facc15;
+    --dim:       #4a6080;
+    --text:      #c8d8f0;
+    --text2:     #7a94b8;
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Exo 2', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated starfield */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(200,216,240,.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 42% 8%,  rgba(200,216,240,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 73% 35%, rgba(200,216,240,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 12%, rgba(200,216,240,.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 68%, rgba(200,216,240,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 80%, rgba(200,216,240,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5%  55%, rgba(200,216,240,.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 75%, rgba(200,216,240,.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 50% 50%, rgba(62,207,207,.2)  0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.6; }
+    to   { opacity: 1.0; }
+  }
+
+  /* Layout */
+  header {
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(to right, rgba(10,22,40,.98), rgba(15,32,68,.98));
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .logo-mark {
+    font-family: var(--mono);
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(62,207,207,.6);
+    letter-spacing: -2px;
+  }
+
+  .site-title {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+  }
+  .site-sub {
+    font-size: .72rem;
+    color: var(--dim);
+    letter-spacing: .08em;
+    margin-top: 2px;
+  }
+
+  .hud-time {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: .85rem;
+    color: var(--dim);
+    text-align: right;
+  }
+  .hud-time span { display: block; color: var(--accent); font-size: 1rem; }
+
+  /* Controls */
+  .controls {
+    position: relative; z-index: 1;
+    padding: 1rem 2rem;
+    display: flex; gap: 1rem; align-items: center;
+    background: rgba(10,22,40,.6);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .controls input,
+  .controls select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: .85rem;
+    padding: .45rem .75rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .controls input:focus,
+  .controls select:focus { border-color: var(--accent); }
+  .controls input { width: 220px; }
+
+  .stat-pills {
+    margin-left: auto;
+    display: flex; gap: .5rem;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: .72rem;
+    padding: .3rem .7rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .pill-en-route  { border-color: #3ecfcf33; color: var(--accent); }
+  .pill-critical  { border-color: #f8717133; color: var(--red); }
+  .pill-completed { border-color: #94a3b833; color: #94a3b8; }
+
+  /* Grid */
+  main {
+    position: relative; z-index: 1;
+    padding: 1.75rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* Mission Card */
+  .mission-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+    animation: cardIn .4s ease both;
+  }
+  .mission-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px var(--accent);
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Glowing corner accent */
+  .mission-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at top right, rgba(62,207,207,.08), transparent 70%);
+  }
+
+  .mission-card[data-status="CRITICAL"]::after {
+    background: radial-gradient(circle at top right, rgba(248,113,113,.1), transparent 70%);
+  }
+  .mission-card[data-status="COMPLETED"] { opacity: .7; }
+
+  header { border-bottom: none; background: none; padding: 0; display: block; }
+  .mission-card header { margin-bottom: .75rem; }
+
+  .mission-id {
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--dim);
+    letter-spacing: .1em;
+    margin-bottom: .2rem;
+  }
+
+  .mission-card h2 {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: #e0ecff;
+    letter-spacing: .04em;
+    display: inline;
+  }
+
+  .status-badge {
+    display: inline-block;
+    margin-left: .6rem;
+    font-family: var(--mono);
+    font-size: .65rem;
+    padding: .15rem .5rem;
+    border-radius: 3px;
+    border: 1px solid;
+    vertical-align: middle;
+    letter-spacing: .08em;
+  }
+
+  .destination {
+    font-size: .8rem;
+    color: var(--text2);
+    margin-bottom: .6rem;
+    font-family: var(--mono);
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--dim);
+    margin-bottom: .85rem;
+  }
+
+  /* Gauges */
+  .gauges { display: flex; gap: 1rem; margin-bottom: .85rem; }
+  .gauges > div { flex: 1; }
+  .gauges label {
+    font-family: var(--mono);
+    font-size: .68rem;
+    color: var(--dim);
+    display: block;
+    margin-bottom: .25rem;
+    letter-spacing: .06em;
+  }
+
+  .gauge-track {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+  }
+  .gauge-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width .6s ease;
+  }
+  .gauge-label {
+    font-family: var(--mono);
+    font-size: .68rem;
+    color: var(--text2);
+    margin-left: .4rem;
+  }
+
+  /* Telemetry */
+  .telemetry {
+    display: flex;
+    gap: .75rem;
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--dim);
+    margin-bottom: .85rem;
+    flex-wrap: wrap;
+  }
+
+  /* Crew section */
+  .crew-section {
+    border-top: 1px solid var(--border);
+    padding-top: .75rem;
+  }
+  .crew-section summary {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--dim);
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: .06em;
+  }
+  .crew-section summary:hover { color: var(--accent); }
+
+  .crew-list {
+    list-style: none;
+    margin-top: .6rem;
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
+  .crew-list li {
+    font-family: var(--mono);
+    font-size: .75rem;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .crew-list em {
+    font-style: normal;
+    color: var(--dim);
+    font-size: .68rem;
+  }
+
+  .health-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 4px currentColor;
+  }
+
+  .error {
+    grid-column: 1/-1;
+    color: var(--red);
+    font-family: var(--mono);
+    text-align: center;
+    padding: 3rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">✦</div>
+  <div>
+    <div class="site-title">Space Mission Tracker</div>
+    <div class="site-sub">MISSION CONTROL — DEEP SPACE OPS</div>
+  </div>
+  <div class="hud-time">
+    <span id="clock">--:--:--</span>
+    UTC · <span id="date-display"></span>
+  </div>
+</header>
+
+<div class="controls">
+  <input id="search" type="text" placeholder="Search missions or destinations…"/>
+  <select id="status-filter">
+    <option value="">All Statuses</option>
+    <option value="LAUNCHED">Launched</option>
+    <option value="EN_ROUTE">En Route</option>
+    <option value="CRITICAL">Critical</option>
+    <option value="COMPLETED">Completed</option>
+  </select>
+  <div class="stat-pills">
+    <span class="pill pill-en-route" id="pill-active">– active</span>
+    <span class="pill pill-critical" id="pill-critical">– critical</span>
+    <span class="pill pill-completed" id="pill-completed">– completed</span>
+  </div>
+</div>
+
+<main id="mission-grid">
+  <p style="grid-column:1/-1;color:var(--dim);font-family:var(--mono);text-align:center;padding:4rem;">
+    Loading mission data…
+  </p>
+</main>
+
+<script type="module" src="src/app.js"></script>
+<script>
+  // Clock
+  function tick() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toUTCString().split(' ')[4];
+    document.getElementById('date-display').textContent =
+      now.toISOString().slice(0,10);
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Stat pills — count after DOM updates (MutationObserver)
+  const obs = new MutationObserver(() => {
+    const cards = document.querySelectorAll('.mission-card');
+    const active    = [...cards].filter(c => ['LAUNCHED','EN_ROUTE'].includes(c.dataset.status)).length;
+    const critical  = [...cards].filter(c => c.dataset.status === 'CRITICAL').length;
+    const completed = [...cards].filter(c => c.dataset.status === 'COMPLETED').length;
+    document.getElementById('pill-active').textContent   = `${active} active`;
+    document.getElementById('pill-critical').textContent = `${critical} critical`;
+    document.getElementById('pill-completed').textContent= `${completed} completed`;
+  });
+  obs.observe(document.getElementById('mission-grid'), { childList: true });
+</script>
+</body>
+</html>

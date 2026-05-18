@@ -1,0 +1,70 @@
+[
+  {
+    "id": "MSN-001",
+    "name": "Helios Vanguard",
+    "destination": "Mars Orbit",
+    "status": "EN_ROUTE",
+    "launchDate": "2026-01-15",
+    "eta": "2026-08-22",
+    "distanceKm": 94500000,
+    "fuelPercent": 61,
+    "crewIds": ["C01", "C02", "C03"],
+    "telemetry": {
+      "oxygenPercent": 98,
+      "tempC": 21,
+      "radiationMsv": 0.4,
+      "signalDelaySec": 314
+    }
+  },
+  {
+    "id": "MSN-002",
+    "name": "Artemis Deep",
+    "destination": "Europa",
+    "status": "LAUNCHED",
+    "launchDate": "2026-03-01",
+    "eta": "2028-11-10",
+    "distanceKm": 5200000,
+    "fuelPercent": 89,
+    "crewIds": ["C04", "C05"],
+    "telemetry": {
+      "oxygenPercent": 99,
+      "tempC": 22,
+      "radiationMsv": 0.2,
+      "signalDelaySec": 17
+    }
+  },
+  {
+    "id": "MSN-003",
+    "name": "Outrider IX",
+    "destination": "Titan",
+    "status": "CRITICAL",
+    "launchDate": "2025-06-10",
+    "eta": "2027-04-03",
+    "distanceKm": 1280000000,
+    "fuelPercent": 28,
+    "crewIds": ["C06", "C07", "C08", "C09"],
+    "telemetry": {
+      "oxygenPercent": 84,
+      "tempC": 18,
+      "radiationMsv": 1.9,
+      "signalDelaySec": 4260
+    }
+  },
+  {
+    "id": "MSN-004",
+    "name": "Solaris One",
+    "destination": "Lagrange Point L2",
+    "status": "COMPLETED",
+    "launchDate": "2025-03-20",
+    "eta": "2025-09-01",
+    "distanceKm": 1500000,
+    "fuelPercent": 12,
+    "crewIds": ["C10"],
+    "telemetry": {
+      "oxygenPercent": 97,
+      "tempC": 20,
+      "radiationMsv": 0.3,
+      "signalDelaySec": 5
+    }
+  }
+]
